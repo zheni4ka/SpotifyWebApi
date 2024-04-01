@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ardalis.Specification;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -20,5 +21,7 @@ namespace BusinessLogic.Interfaces
         void Delete(TEntity entityToDelete);
         void Update(TEntity entityToUpdate);
         void Save();
+        Task<TEntity?> GetItemBySpec(ISpecification<TEntity> specification);
+        Task<IEnumerable<TEntity>> GetListBySpec(ISpecification<TEntity> specification);
     }
 }

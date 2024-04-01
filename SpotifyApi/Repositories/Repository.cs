@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using BusinessLogic.Interfaces;
 using DataAccess.Data;
+using Ardalis.Specification;
+using Ardalis.Specification.EntityFrameworkCore;
 
 namespace DataAccess.Repositories
 {
@@ -69,6 +71,22 @@ namespace DataAccess.Repositories
         {
             dbSet.Attach(entityToUpdate);
             context.Entry(entityToUpdate).State = EntityState.Modified;
+        }
+
+        public async Task<IEnumerable<TEntity>> GetListBySpec(ISpecification<TEntity> specification)
+        {
+            return await ApplySpecification(specification).ToListAsync();
+        }
+
+        public async Task<TEntity?> GetItemBySpec(ISpecification<TEntity> specification)
+        {
+            return await ApplySpecification(specification).FirstOrDefaultAsync();
+        }
+
+        private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity> specification)
+        {
+            var evaluator = new SpecificationEvaluator();
+            return evaluator.GetQuery(dbSet, specification);
         }
     }
 }
